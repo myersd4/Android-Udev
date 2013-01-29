@@ -1,0 +1,45 @@
+#!/bin/bash
+
+devPath=/etc/udev/rules.d/51-android.rules
+
+declare -A devices
+
+devices[Acer]="0502"
+devices[ASUS]="0b05"
+devices[Dell]="413c"
+devices[Foxconn]="0489"
+devices[Fujitsu_Toshiba]="04c5"
+devices[Garmin_ASUS]="091e"
+devices[Google]="18d1"
+devices[Hisense]="109b"
+devices[HTC]="0bb4" 
+devices[Huawei]="12d1"
+devices[K-Touch]="24e3"
+devices[KT_Tech]="2116"
+devices[Kyocera]="0482"
+devices[Lenovo]="17ef"
+devices[LG]="1004"
+devices[Motorola]="22b8"
+devices[NEC]="0409"
+devices[Nook]="2080"
+
+printf "%20s %20s \n" "Device Type" "Number"
+printf "%40s\n" "------------------------------------------"
+
+for type in "${!devices[@]}"
+do
+	printf "%20s %20s \n" $type ${devices[$type]}
+done
+
+echo "Please enter your device ID from the table above: "
+read IDNum
+
+if [ -e $devPath ]
+then
+	echo SUBSYSTEM=="usb", ATTR{idVendor}=="$IDNum", MODE="0666", GROUP="plugdev" >> $devPath
+else
+	echo SUBSYSTEM=="usb", ATTR{idVendor}=="$IDNum", MODE="0666", GROUP="plugdev" > $devPath
+fi
+
+chmod a+r $devPath
+
