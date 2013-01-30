@@ -1,9 +1,10 @@
 #!/bin/bash
 
-devPath=/etc/udev/rules.d/51-android.rules
+devPath=/etc/udev/rules.d/51-android.rules #Path to udev rules.
 
-declare -A devices
+declare -A devices  #Declare an array of devices.
 
+#Device information from developer.android.com/tools/device.html.
 devices[Acer]="0502"
 devices[ASUS]="0b05"
 devices[Dell]="413c"
@@ -22,18 +23,37 @@ devices[LG]="1004"
 devices[Motorola]="22b8"
 devices[NEC]="0409"
 devices[Nook]="2080"
+devices[Nvidia]="0955"
+devices[OTGV]="2257"
+devices[Pantech]="10a9"
+devices[Pegatron]="1d4d"
+devices[Philips]="0471"
+devices[PMC-Sierra]="04da"
+devices[Qualcomm]="05c6"
+devices[SK_Telesys]="1f53"
+devices[Samsung]="04e8"
+devices[Sharp]="04dd"
+devices[Sony]="054c"
+devices[Sony_Ericsson]="0fce"
+devices[Teleepoch]="2340"
+devices[Toshiba]="0930"
+devices[ZTE]="19d2"
+
 
 printf "%20s %20s \n" "Device Type" "Number"
 printf "%40s\n" "------------------------------------------"
 
+#Print the array of devices with their keys.
 for type in "${!devices[@]}"
 do
 	printf "%20s %20s \n" $type ${devices[$type]}
 done
 
+#Read device number from user.
 echo "Please enter your device ID from the table above: "
 read IDNum
 
+#Edit udev files.  If no file exists one will be created.
 if [ -e $devPath ]
 then
 	echo SUBSYSTEM=="usb", ATTR{idVendor}=="$IDNum", MODE="0666", GROUP="plugdev" >> $devPath
@@ -41,5 +61,6 @@ else
 	echo SUBSYSTEM=="usb", ATTR{idVendor}=="$IDNum", MODE="0666", GROUP="plugdev" > $devPath
 fi
 
+#Make sure file has read permissions for all users.
 chmod a+r $devPath
 
